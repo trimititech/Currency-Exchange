@@ -20,7 +20,7 @@ export default function Home() {
   useEffect(() => {
     // Set the best bank as selected by default
     setSelectedBank(bestBank.name);
-  }, []);
+  }, [bestBank, bestBank.name]);
   const handleAmountChange = (value: number) => {
     setAmount(value);
   };
@@ -55,16 +55,16 @@ export default function Home() {
             />
           </div>
           <div className="lg:col-span-2 space-y-6">
-            <ExchangeRateGraph
-              data={mockHistoricalData.data}
-              period={period}
-              onPeriodChange={handlePeriodChange}
-            />
             <BankComparison
               banks={mockBankData}
               selectedBank={selectedBank}
               onBankSelect={handleBankSelect}
               amount={amount}
+            />
+            <ExchangeRateGraph
+              data={mockHistoricalData.data}
+              period={period}
+              onPeriodChange={handlePeriodChange}
             />
           </div>
         </div>
