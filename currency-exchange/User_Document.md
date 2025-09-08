@@ -9,20 +9,24 @@ Welcome to the Currency Exchange application! This guide will help you understan
 
 ## How to Use the Application
 
-### 1. Currency Conversion
+### 1. Live Exchange Rate
 
-To convert currencies, follow these steps:
+Upon loading the application, you will see a live exchange rate for SGD to INR displayed prominently at the top of the page. This rate is fetched from a reliable API and is updated regularly.
 
-1.  **Select the 'From' Currency:** Use the dropdown menu to select the currency you want to convert from.
-2.  **Select the 'To' Currency:** Use the second dropdown menu to select the currency you want to convert to.
-3.  **Enter the Amount:** In the input field, type the amount you wish to convert.
-4.  **View the Result:** The converted amount will be displayed automatically.
+### 2. Currency Conversion
 
-### 2. Viewing Historical Data
+In the **Currency Converter** widget, you can:
 
-To view the historical exchange rate data for a currency pair, look for a 'Chart' or 'History' tab or button. This will display a chart showing the exchange rate fluctuations over a selected period.
+1. **Enter an Amount:** Type the amount of SGD you wish to convert.
+2. **Select a Bank:** Choose a bank from the dropdown to see the effective exchange rate and the converted amount.
 
-You can typically adjust the time range (e.g., 1 week, 1 month, 1 year) to see more detailed or long-term trends.
+### 3. Bank Comparison
+
+The **Bank Comparison** widget allows you to compare the exchange rates of various banks. You can select a bank from this list to see more details and to update the **Exchange Rate Trend** graph.
+
+### 4. Viewing Historical Data
+
+The **Exchange Rate Trend** widget displays a graph of the historical exchange rate data. This graph is interactive and will update based on the bank you select in the **Bank Comparison** widget. You can also change the time period (e.g., 1M, 6M, 1Y) to see different trends.
 
 ## Frequently Asked Questions (FAQ)
 

@@ -2,6 +2,13 @@
 
 This is a web application for currency exchange, built with Next.js and TypeScript.
 
+## Features
+
+- **Live Exchange Rates:** Displays a live, up-to-the-minute exchange rate for SGD to INR.
+- **Interactive Bank Comparison:** Compare exchange rates from multiple banks in a clear, easy-to-read table.
+- **Dynamic Historical Data:** The exchange rate graph updates to show simulated historical data based on the selected bank.
+- **Responsive Design:** The application is designed to work seamlessly on both desktop and mobile devices.
+
 ## Technologies Used
 
 - **Framework:** [Next.js](https://nextjs.org/)
