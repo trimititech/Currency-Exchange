@@ -107,11 +107,6 @@ export default function Home() {
               period={period}
               onPeriodChange={handlePeriodChange}
             />
-            <ExchangeRateGraph
-              data={mockHistoricalData.data}
-              period={period}
-              onPeriodChange={handlePeriodChange}
-            />
           </div>
         </div>
       </div>
