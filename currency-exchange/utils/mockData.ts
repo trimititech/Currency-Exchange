@@ -33,28 +33,28 @@ export const mockBankData: BankData[] = [
     rate: 61.95,
     margin: 0.3,
     effectiveRate: 61.76,
-    url: '#'
+    url: 'https://www.dbs.com/digibank/in/send-money/remit-money-to-india'
   },
   {
     name: "SBI Bank",
     rate: 61.70,
     margin: 0.2,
     effectiveRate: 61.58,
-    url: '#'
+    url: 'https://remit.onlinesbi.sbi/'
   },
   {
     name: "HDFC Bank",
     rate: 61.90,
     margin: 0.7,
     effectiveRate: 61.47,
-    url: '#'
+    url: 'https://www.hdfcbank.com/personal/money-transfer/remittance-to-india'
   },
   {
     name: "Axis Bank",
     rate: 61.75,
     margin: 0.4,
     effectiveRate: 61.50,
-    url: '#'
+    url: 'https://www.axisbank.com/retail/forex/axis-forex-online/send-money-to-india'
   }
 ];
 // Generate mock historical data for the past 3 months

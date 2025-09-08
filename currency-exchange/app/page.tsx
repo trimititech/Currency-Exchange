@@ -16,6 +16,7 @@ export default function Home() {
   const [period, setPeriod] = useState<string>("1M");
   const [graphData, setGraphData] = useState(mockHistoricalData.data);
   const [liveRates, setLiveRates] = useState<Record<string, number | null> | null>(null);
+  const [liveFlags, setLiveFlags] = useState<Record<string, boolean> | null>(null);
   // Find the bank with the best effective rate (considering margins)
   const bestBank = mockBankData.reduce((prev, current) =>
     current.effectiveRate > prev.effectiveRate ? current : prev
@@ -24,6 +25,17 @@ export default function Home() {
     // Set the best bank as selected by default
     setSelectedBank(bestBank.name);
   }, [bestBank.name]);
+
+  // Automatically select the bank with the highest 'You Get (INR)' value
+  useEffect(() => {
+    if (!mockBankData.length) return;
+    // Use liveRates if available, otherwise use effectiveRate
+    const getConverted = (bank: typeof mockBankData[0]) => {
+      return amount * bank.effectiveRate;
+    };
+    const bestBank = [...mockBankData].sort((a, b) => getConverted(b) - getConverted(a))[0];
+    setSelectedBank(bestBank.name);
+  }, [amount, liveRates]);
 
   useEffect(() => {
     const selectedBankData = mockBankData.find(bank => bank.name === selectedBank);
@@ -38,7 +50,8 @@ export default function Home() {
       try {
         const response = await fetch('/api/live-rates');
         const data = await response.json();
-        setLiveRates(data);
+        setLiveRates(data.rates);
+        setLiveFlags(data.liveFlags);
       } catch (error) {
         console.error('Error fetching live rates:', error);
       }
@@ -87,6 +100,7 @@ export default function Home() {
               onBankSelect={handleBankSelect}
               amount={amount}
               liveRates={liveRates}
+              liveFlags={liveFlags}
             />
             <ExchangeRateGraph
               data={graphData}

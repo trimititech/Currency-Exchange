@@ -3,12 +3,15 @@ import React from 'react'
 import { Check, TrendingUp, ExternalLink } from 'lucide-react'
 import { BankData } from '@/utils/mockData'
 
+import { AlertTriangle } from 'lucide-react';
+
 interface BankComparisonProps {
   banks: BankData[];
   selectedBank: string;
   onBankSelect: (bankName: string) => void;
   amount: number;
   liveRates: Record<string, number | null> | null;
+  liveFlags: Record<string, boolean> | null;
 }
 
 export const BankComparison: React.FC<BankComparisonProps> = ({
@@ -17,21 +20,19 @@ export const BankComparison: React.FC<BankComparisonProps> = ({
   onBankSelect,
   amount,
   liveRates,
+  liveFlags,
 }) => {
-  // Find the bank with the best effective rate
-  const bestBank = [...banks].sort((a, b) => b.effectiveRate - a.effectiveRate)[0];
-
-  // Create a sorted list with the best bank at the top, and the rest sorted by their base rate
-  const sortedBanks = [
-    bestBank,
-    ...[...banks]
-      .filter((bank) => bank.name !== bestBank.name)
-      .sort((a, b) => a.rate - b.rate),
-  ];
+  // Sort banks by 'You Get (INR)' descending
+  const sortedBanks = [...banks].sort((a, b) => {
+    const aGet = amount * a.effectiveRate;
+    const bGet = amount * b.effectiveRate;
+    return bGet - aGet;
+  });
+  const bestBank = sortedBanks[0];
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Bank Comparison</h2>
+      <h2 className="text-xl font-semibold mb-4">Exchange Sources</h2>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead>
@@ -101,8 +102,19 @@ export const BankComparison: React.FC<BankComparisonProps> = ({
                     )}
                   </td>
                   <td className="px-3 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
-                      {bank.hasLiveRate && liveRates && liveRates[bank.name] ? `₹ ${liveRates[bank.name]?.toFixed(4)}` : '-'}
+                    <div className="text-sm text-gray-900 flex items-center gap-1">
+                      {bank.hasLiveRate && liveRates && liveRates[bank.name] ? (
+                        <>
+                          ₹ {liveRates[bank.name]?.toFixed(4)}
+                          {liveFlags && liveFlags[bank.name] === false && (
+                            <span title="This rate is not live (fallback value)">
+                              <AlertTriangle className="w-4 h-4 text-yellow-500 ml-1 inline" />
+                            </span>
+                          )}
+                        </>
+                      ) : (
+                        '-'
+                      )}
                     </div>
                   </td>
                   <td className="px-3 py-4 whitespace-nowrap">
