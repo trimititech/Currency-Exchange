@@ -4,13 +4,13 @@ import React, { useEffect, useState } from "react";
 // import { Layout } from './components/Layout'
 import { CurrencyConverter } from "@/components/CurrencyConverter";
 import { BankComparison } from "@/components/BankComparison";
-import { ExchangeRateGraph } from "@/components/ExchangeRateGraph";
+// import { ExchangeRateGraph } from "@/components/ExchangeRateGraph";
 import { TransferSuggestion } from "@/components/TransferSuggestion";
 
 import {
   // mockBankData,
   mockHistoricalData,
-  generateHistoricalData,
+  // generateHistoricalData,
 } from "@/utils/mockData";
 import { BankData, BankProvider } from "@/types/rates";
 import { useLiveExchangeRate } from "@/hooks/use-live-exchangerate";
@@ -38,8 +38,8 @@ const mapProviderToBank = (bank: BankProvider) => {
 export default function Home() {
   const [amount, setAmount] = useState<number>(1000);
   const [selectedBank, setSelectedBank] = useState<string>("");
-  const [period, setPeriod] = useState<string>("1M");
-  const [graphData, setGraphData] = useState(mockHistoricalData.data);
+  // const [period, setPeriod] = useState<string>("1M");
+  // const [graphData, setGraphData] = useState(mockHistoricalData.data);
   // const [liveRates, setLiveRates] = useState<Record<
   //   string,
   //   number | null
@@ -92,8 +92,8 @@ export default function Home() {
       (bank) => bank.name === selectedBank
     );
     if (selectedBankData) {
-      const newGraphData = generateHistoricalData(90, selectedBankData.rate);
-      setGraphData(newGraphData);
+      // const newGraphData = generateHistoricalData(90, selectedBankData.rate);
+      // setGraphData(newGraphData);
     }
   }, [selectedBank, bankList]);
  
@@ -103,9 +103,9 @@ export default function Home() {
   const handleBankSelect = (bankName: string) => {
     setSelectedBank(bankName);
   };
-  const handlePeriodChange = (newPeriod: string) => {
-    setPeriod(newPeriod);
-  };
+  // const handlePeriodChange = (newPeriod: string) => {
+  //   setPeriod(newPeriod);
+  // };
   return (
     <>
       <div className="w-full px-4 py-6 sm:px-6 lg:px-8 bg-background min-h-screen">
@@ -140,11 +140,11 @@ export default function Home() {
               // liveRates={liveRates}
               // liveFlags={liveFlags}
             />
-            <ExchangeRateGraph
+            {/* <ExchangeRateGraph
               data={graphData}
               period={period}
               onPeriodChange={handlePeriodChange}
-            />
+            /> */}
           </div>
         </div>
       </div>

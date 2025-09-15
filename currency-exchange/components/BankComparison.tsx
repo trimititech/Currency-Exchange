@@ -75,9 +75,9 @@ export const BankComparison: React.FC<BankComparisonProps> = ({
               {/* <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Live Rate
               </th> */}
-              <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              {/* <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Select
-              </th>
+              </th> */}
               {/* <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Visit
               </th> */}
@@ -91,7 +91,8 @@ export const BankComparison: React.FC<BankComparisonProps> = ({
               return (
                 <tr
                   key={bank.name}
-                  className={`${isBest ? 'bg-green-50' : ''} ${isSelected ? 'bg-blue-50' : ''} hover:bg-gray-50`}
+                  className={`hover:cursor-pointer ${isBest ? 'bg-green-50' : ''} ${isSelected ? 'bg-blue-50' : ''} hover:bg-gray-50`}
+                  onClick={()=>onBankSelect(bank.name)}
                 >
                   <td className="px-3 py-4 whitespace-nowrap">
                     <div className="flex items-center">
@@ -141,7 +142,9 @@ export const BankComparison: React.FC<BankComparisonProps> = ({
                       )} 
                     </div>
                   </td> */}
-                  <td className="px-3 py-4 whitespace-nowrap">
+                  {/* <td className="px-3 py-4 whitespace-nowrap"
+                  
+                  >
                     <button
                       onClick={() => onBankSelect(bank.name)}
                       className={`inline-flex items-center px-3 py-1 border ${isSelected ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'} rounded-md text-sm font-medium focus:outline-none`}
@@ -154,7 +157,7 @@ export const BankComparison: React.FC<BankComparisonProps> = ({
                         'Select'
                       )}
                     </button>
-                  </td>
+                  </td> */}
                   {/* <td className="px-3 py-4 whitespace-nowrap">
                     <a href={bank.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800" title={`Visit ${bank.name} website`}>
                       <ExternalLink className="w-5 h-5" />
