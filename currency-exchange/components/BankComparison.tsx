@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { Check, TrendingUp } from 'lucide-react'
+import {  TrendingUp } from 'lucide-react'
 import { BankData } from '@/types/rates'
 
 // import { AlertTriangle } from 'lucide-react';
