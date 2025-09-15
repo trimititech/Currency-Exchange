@@ -66,9 +66,9 @@ export const BankComparison: React.FC<BankComparisonProps> = ({
               <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Rate (1 SGD)
               </th>
-              <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              {/* <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Margin
-              </th>
+              </th> */}
               <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 You Get (INR)
               </th>
@@ -111,9 +111,9 @@ export const BankComparison: React.FC<BankComparisonProps> = ({
                       ₹ {bank.rate.toFixed(2)}
                     </div>
                   </td>
-                  <td className="px-3 py-4 whitespace-nowrap">
+                  {/* <td className="px-3 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{bank.margin}%</div>
-                  </td>
+                  </td> */}
                   <td className="px-3 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">
                       ₹ {convertedAmount.toFixed(2)}
