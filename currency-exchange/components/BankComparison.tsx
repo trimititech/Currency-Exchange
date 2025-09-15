@@ -1,29 +1,52 @@
 'use client'
 import React from 'react'
-import { Check, TrendingUp, ExternalLink } from 'lucide-react'
-import { BankData } from '@/utils/mockData'
+import { Check, TrendingUp } from 'lucide-react'
+import { BankData } from '@/types/rates'
 
-import { AlertTriangle } from 'lucide-react';
+// import { AlertTriangle } from 'lucide-react';
 
 interface BankComparisonProps {
   banks: BankData[];
   selectedBank: string;
   onBankSelect: (bankName: string) => void;
   amount: number;
-  liveRates: Record<string, number | null> | null;
-  liveFlags: Record<string, boolean> | null;
+  // liveRates: Record<string, number | null> | null;
+  // liveFlags: Record<string, boolean> | null;
 }
-
+function findSlabForAmount(slabs: BankData['slabs'], amount: number) {
+  return (
+    slabs.find(
+      (slab) =>
+        amount >= slab.minAmount &&
+        (slab.maxAmount === undefined || amount <= slab.maxAmount)
+    ) ?? slabs[0]
+  )
+}
 export const BankComparison: React.FC<BankComparisonProps> = ({
   banks,
   selectedBank,
   onBankSelect,
   amount,
-  liveRates,
-  liveFlags,
+  // liveRates,
+  // liveFlags,
 }) => {
+   const banksWithDynamicRates = banks.map((bank) => {
+    if (!bank.slabs || bank.slabs.length === 0) {
+      return { ...bank, rate: 0, margin: 0, effectiveRate: 0 }
+    }
+
+    const slab = findSlabForAmount(bank.slabs, amount)
+    const effectiveRate = slab.bankRate * (1 + slab.marginPercent / 100)
+
+    return {
+      ...bank,
+      rate: slab.bankRate,
+      margin: slab.marginPercent,
+      effectiveRate,
+    }
+  })
   // Sort banks by 'You Get (INR)' descending
-  const sortedBanks = [...banks].sort((a, b) => {
+  const sortedBanks = [...banksWithDynamicRates].sort((a, b) => {
     const aGet = amount * a.effectiveRate;
     const bGet = amount * b.effectiveRate;
     return bGet - aGet;
@@ -49,15 +72,15 @@ export const BankComparison: React.FC<BankComparisonProps> = ({
               <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 You Get (INR)
               </th>
-              <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              {/* <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Live Rate
-              </th>
+              </th> */}
               <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Select
               </th>
-              <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              {/* <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Visit
-              </th>
+              </th> */}
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
@@ -73,7 +96,8 @@ export const BankComparison: React.FC<BankComparisonProps> = ({
                   <td className="px-3 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="font-medium text-gray-900">
-                        {bank.name}{bank.hasLiveRate && '*'}
+                        {bank.name}
+                        {/* {bank.hasLiveRate && '*'} */}
                         {isBest && (
                           <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
                             Best Rate
@@ -101,9 +125,9 @@ export const BankComparison: React.FC<BankComparisonProps> = ({
                       </div>
                     )}
                   </td>
-                  <td className="px-3 py-4 whitespace-nowrap">
+                  {/* <td className="px-3 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900 flex items-center gap-1">
-                      {bank.hasLiveRate && liveRates && liveRates[bank.name] ? (
+                   {bank.hasLiveRate && liveRates && liveRates[bank.name] ? (
                         <>
                           ₹ {liveRates[bank.name]?.toFixed(4)}
                           {liveFlags && liveFlags[bank.name] === false && (
@@ -114,9 +138,9 @@ export const BankComparison: React.FC<BankComparisonProps> = ({
                         </>
                       ) : (
                         '-'
-                      )}
+                      )} 
                     </div>
-                  </td>
+                  </td> */}
                   <td className="px-3 py-4 whitespace-nowrap">
                     <button
                       onClick={() => onBankSelect(bank.name)}
@@ -131,11 +155,11 @@ export const BankComparison: React.FC<BankComparisonProps> = ({
                       )}
                     </button>
                   </td>
-                  <td className="px-3 py-4 whitespace-nowrap">
+                  {/* <td className="px-3 py-4 whitespace-nowrap">
                     <a href={bank.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800" title={`Visit ${bank.name} website`}>
                       <ExternalLink className="w-5 h-5" />
                     </a>
-                  </td>
+                  </td> */}
                 </tr>
               )
             })}

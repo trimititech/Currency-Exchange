@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React, { useEffect, useState } from "react";
 // import { Layout } from './components/Layout'
@@ -7,58 +7,96 @@ import { BankComparison } from "@/components/BankComparison";
 import { ExchangeRateGraph } from "@/components/ExchangeRateGraph";
 import { TransferSuggestion } from "@/components/TransferSuggestion";
 
-import { mockBankData, mockHistoricalData, generateHistoricalData } from "@/utils/mockData";
+import {
+  // mockBankData,
+  mockHistoricalData,
+  generateHistoricalData,
+} from "@/utils/mockData";
+import { BankData, BankProvider } from "@/types/rates";
+import { useLiveExchangeRate } from "@/hooks/use-live-exchangerate";
+import { bankProviders } from "@/data/bank-data";
+const mapProviderToBank = (bank: BankProvider) => {
+  const firstSlab = bank.slabs[0];
+  const rate = firstSlab.bankRate;
+  const margin = firstSlab.marginPercent;
+  // Calculate effectiveRate = rate after applying margin (assuming margin is positive % spread)
+  // Effective rate could mean the cost rate after margin, but since bankRate already includes margin,
+  // here effectiveRate just equals the bankRate
+  const effectiveRate = rate;
+  return {
+    name: bank.name,
+    rate,
+    margin,
+    effectiveRate,
+    url: "", // Assuming url can be optional and may exist
+    hasLiveRate: bank.hasLiveRate,
+    id: bank.id,
+    slabs: bank.slabs,
+  };
+};
+
 export default function Home() {
   const [amount, setAmount] = useState<number>(1000);
-  const [selectedBank, setSelectedBank] = useState<string>(
-    mockBankData[0].name
-  );
+  const [selectedBank, setSelectedBank] = useState<string>("");
   const [period, setPeriod] = useState<string>("1M");
   const [graphData, setGraphData] = useState(mockHistoricalData.data);
-  const [liveRates, setLiveRates] = useState<Record<string, number | null> | null>(null);
-  const [liveFlags, setLiveFlags] = useState<Record<string, boolean> | null>(null);
-  // Find the bank with the best effective rate (considering margins)
-  const bestBank = mockBankData.reduce((prev, current) =>
-    current.effectiveRate > prev.effectiveRate ? current : prev
+  // const [liveRates, setLiveRates] = useState<Record<
+  //   string,
+  //   number | null
+  // > | null>(null);
+  // const [liveFlags, setLiveFlags] = useState<Record<string, boolean> | null>(
+  //   null
+  // );
+  const { rate: midMarketRate, loading } = useLiveExchangeRate();
+  const [bankList, setBankList] = useState<BankData[]>(
+    bankProviders.map(mapProviderToBank)
   );
-  useEffect(() => {
-    // Set the best bank as selected by default
-    setSelectedBank(bestBank.name);
-  }, [bestBank.name]);
-
-  // Automatically select the bank with the highest 'You Get (INR)' value
-  useEffect(() => {
-    if (!mockBankData.length) return;
-    // Use liveRates if available, otherwise use effectiveRate
-    const getConverted = (bank: typeof mockBankData[0]) => {
-      return amount * bank.effectiveRate;
-    };
-    const bestBank = [...mockBankData].sort((a, b) => getConverted(b) - getConverted(a))[0];
-    setSelectedBank(bestBank.name);
-  }, [amount, liveRates]);
 
   useEffect(() => {
-    const selectedBankData = mockBankData.find(bank => bank.name === selectedBank);
+    if (loading || midMarketRate === null) return;
+
+    const updatedBanks = bankProviders.map((provider) => {
+      const firstSlab = provider.slabs[0];
+      const marginPercent = firstSlab.marginPercent;
+      // Calculate bank rate from mid-market rate + margin
+      const updatedRate = midMarketRate * (1 + marginPercent / 100);
+
+      return {
+        name: provider.name,
+        margin: marginPercent,
+        rate: updatedRate,
+        effectiveRate: updatedRate,
+        url: provider.url ?? "",
+        hasLiveRate: provider.hasLiveRate,
+        slabs: provider.slabs,
+        id: provider.id,
+      };
+    });
+
+    setBankList(updatedBanks);
+  }, [midMarketRate, loading]);
+
+  // Automatically select the bank with the highest effective rate
+  useEffect(() => {
+    if (!bankList.length) return;
+
+    const bestBank = [...bankList].sort(
+      (a, b) => b.effectiveRate - a.effectiveRate
+    )[0];
+
+    setSelectedBank(bestBank.name);
+  }, [bankList]);
+
+  useEffect(() => {
+    const selectedBankData = bankList.find(
+      (bank) => bank.name === selectedBank
+    );
     if (selectedBankData) {
       const newGraphData = generateHistoricalData(90, selectedBankData.rate);
       setGraphData(newGraphData);
     }
-  }, [selectedBank]);
-
-  useEffect(() => {
-    const fetchLiveRates = async () => {
-      try {
-        const response = await fetch('/api/live-rates');
-        const data = await response.json();
-        setLiveRates(data.rates);
-        setLiveFlags(data.liveFlags);
-      } catch (error) {
-        console.error('Error fetching live rates:', error);
-      }
-    };
-
-    fetchLiveRates();
-  }, []);
+  }, [selectedBank, bankList]);
+ 
   const handleAmountChange = (value: number) => {
     setAmount(value);
   };
@@ -85,7 +123,7 @@ export default function Home() {
             <CurrencyConverter
               amount={amount}
               onAmountChange={handleAmountChange}
-              banks={mockBankData}
+              banks={bankList}
               selectedBank={selectedBank}
             />
             <TransferSuggestion
@@ -95,12 +133,12 @@ export default function Home() {
           </div>
           <div className="lg:col-span-2 space-y-6">
             <BankComparison
-              banks={mockBankData}
+              banks={bankList}
               selectedBank={selectedBank}
               onBankSelect={handleBankSelect}
               amount={amount}
-              liveRates={liveRates}
-              liveFlags={liveFlags}
+              // liveRates={liveRates}
+              // liveFlags={liveFlags}
             />
             <ExchangeRateGraph
               data={graphData}
